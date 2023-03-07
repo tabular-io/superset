@@ -17,6 +17,7 @@
  * under the License.
  */
 import React, { useCallback, useState, useMemo, useEffect } from 'react';
+import rison from 'rison';
 import { Column, ensureIsArray, SupersetClient, t } from '@superset-ui/core';
 import { useChangeEffect } from 'src/hooks/useChangeEffect';
 import { Select, FormInstance } from 'src/components';
@@ -98,7 +99,26 @@ export function ColumnSelect({
     }
     if (datasetId != null) {
       cachedSupersetGet({
-        endpoint: `/api/v1/dataset/${datasetId}`,
+        endpoint: `/api/v1/dataset/${datasetId}?q=${rison.encode({
+          columns: [
+            'columns.advanced_data_type',
+            'columns.changed_on',
+            'columns.column_name',
+            'columns.created_on',
+            'columns.description',
+            'columns.expression',
+            'columns.filterable',
+            'columns.groupby',
+            'columns.id',
+            'columns.is_active',
+            'columns.extra',
+            'columns.is_dttm',
+            'columns.python_date_format',
+            'columns.type',
+            'columns.uuid',
+            'columns.verbose_name',
+          ],
+        })}`,
       }).then(
         ({ json: { result } }) => {
           const lookupValue = Array.isArray(value) ? value : [value];
